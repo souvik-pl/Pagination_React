@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  border: none;
+  font-size: 16px;
+}
+
+.btn:hover {
+  background-color: lightgray;
+}
+
+.prevnextBtn {
+  gap: 8px;
+}
+
+.selected {
+  border: 1px solid black;
+}
+
+.ellipsis {
+  font-size: 16px;
+}
