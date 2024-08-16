@@ -1,102 +1,59 @@
-import { useState } from "react";
-import { PaginationProps } from "./common/pagination.type";
+import { useEffect, useState } from "react";
+import { PaginationProps } from "./common/common.type";
 import styles from "./Pagination.module.css";
+import usePagination, { DOTS } from "./usePagination";
 
 function Pagination(props: PaginationProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const maxPageButtonCount: number = 3;
-  const showLeftEllipsis: boolean = currentPage > maxPageButtonCount;
-  const showRightEllipsis: boolean = currentPage + maxPageButtonCount <= props.pagesCount;
-  const pageButtonCount: number =
-    props.pagesCount < maxPageButtonCount ? props.pagesCount : maxPageButtonCount;
+  const { totalPages, onChange } = props;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const paginationUIElements = usePagination(totalPages, currentPage);
 
-  function prevButtonClickHandler() {
-    const newPage = currentPage - 1;
-    if (newPage < 1) return;
-    setCurrentPage(newPage);
-    props.updatePageNumber(newPage);
-  }
+  useEffect(() => {
+    onChange(currentPage);
+  }, [currentPage]);
 
-  function nextButtonClickHandler() {
-    const newPage = currentPage + 1;
-    if (newPage > props.pagesCount) return;
-    setCurrentPage(newPage);
-    props.updatePageNumber(newPage);
-  }
-
-  function pageButtonClickHandler(pageNumber: number) {
+  function updatePage(pageNumber: number) {
     setCurrentPage(pageNumber);
-    props.updatePageNumber(pageNumber);
+  }
+
+  function prevHandler() {
+    const newPage = currentPage - 1;
+    if (newPage > 0) {
+      updatePage(newPage);
+    }
+  }
+
+  function nextHandler() {
+    const newPage = currentPage + 1;
+    if (newPage <= totalPages) {
+      updatePage(newPage);
+    }
   }
 
   return (
     <div className={styles.container}>
-      <button className={`${styles.btn} ${styles.prevnextBtn}`} onClick={prevButtonClickHandler}>
-        <span>&lt;</span>
-        Previous
+      <button className={styles.btn} onClick={prevHandler}>
+        Prev
       </button>
-      {/* Left Ellipsis */}
-      {showLeftEllipsis && <span className={styles.ellipsis}>...</span>}
-      {/* Page Buttons */}
-      {showLeftEllipsis &&
-        showRightEllipsis &&
-        Array.from({ length: maxPageButtonCount }).map((_, index) => (
+      {paginationUIElements.map((pageNumber, index) => {
+        if (pageNumber === DOTS) {
+          return <span key={index}>{DOTS}</span>;
+        }
+
+        return (
           <button
             key={index}
-            onClick={() => pageButtonClickHandler(currentPage - 1 + index)}
             className={
-              currentPage - 1 + index === currentPage
-                ? `${styles.btn} ${styles.selected}`
-                : styles.btn
+              pageNumber === currentPage ? `${styles.btn} ${styles.btn_selected}` : styles.btn
             }
+            onClick={() => updatePage(pageNumber as number)}
           >
-            {currentPage - 1 + index}
+            {pageNumber}
           </button>
-        ))}
-      {showLeftEllipsis &&
-        !showRightEllipsis &&
-        Array.from({ length: maxPageButtonCount }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() =>
-              pageButtonClickHandler(props.pagesCount - maxPageButtonCount + index + 1)
-            }
-            className={
-              props.pagesCount - maxPageButtonCount + index + 1 === currentPage
-                ? `${styles.btn} ${styles.selected}`
-                : styles.btn
-            }
-          >
-            {props.pagesCount - maxPageButtonCount + index + 1}
-          </button>
-        ))}
-      {showRightEllipsis &&
-        !showLeftEllipsis &&
-        Array.from({ length: maxPageButtonCount }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => pageButtonClickHandler(index + 1)}
-            className={index + 1 === currentPage ? `${styles.btn} ${styles.selected}` : styles.btn}
-          >
-            {index + 1}
-          </button>
-        ))}
-      {!showLeftEllipsis &&
-        !showRightEllipsis &&
-        Array.from({ length: pageButtonCount }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => pageButtonClickHandler(index + 1)}
-            className={index + 1 === currentPage ? `${styles.btn} ${styles.selected}` : styles.btn}
-          >
-            {index + 1}
-          </button>
-        ))}
-      {/* Right Ellipsis */}
-      {showRightEllipsis && <span className={styles.ellipsis}>...</span>}
-      <button className={`${styles.btn} ${styles.prevnextBtn}`} onClick={nextButtonClickHandler}>
+        );
+      })}
+      <button className={styles.btn} onClick={nextHandler}>
         Next
-        <span>&gt;</span>
       </button>
     </div>
   );

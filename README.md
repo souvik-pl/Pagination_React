@@ -4,7 +4,7 @@ This project implements a reusable `Pagination` component in React that allows u
 
 ## Preview
 
-![Preview](./preview/pagination-preview.gif)
+![Preview](./preview/pagination-preview.png)
 
 ## Usage
 
@@ -19,7 +19,7 @@ function App() {
     setOffset(userSelctedOffset);
   }
 
-  return <Pagination pagesCount={totalPages} updatePageNumber={updateOffset} />;
+  return <Pagination totalPages={pagesCount} onChange={updateOffset} />;
 }
 
 export default App;
@@ -29,13 +29,13 @@ export default App;
 
 The `Pagination` component accepts the following props:
 
-- **`pagesCount: number`**: The total number of pages.
-- **`updatePageNumber: (pageNumber: number) => void`**: A callback function that is called with the selected page number whenever the user navigates to a different page.
+- **`totalPages: number`**: The total number of pages.
+- **`onChange: (pageNumber: number) => void`**: A callback function that is called with the selected page number whenever the user navigates to a different page.
 
 ```typescript
 export type PaginationProps = {
-  pagesCount: number;
-  updatePageNumber: (pageNumber: number) => void;
+  totalPages: number;
+  onChange: (pageNumber: number) => void;
 };
 ```
 

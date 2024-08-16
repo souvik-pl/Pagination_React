@@ -37,7 +37,7 @@ function App() {
         ))}
       </div>
       <div className={styles.paginationContainer}>
-        <Pagination pagesCount={pagesCount} updatePageNumber={updateOffset} />
+        <Pagination totalPages={pagesCount} onChange={updateOffset} />
       </div>
     </div>
   );
